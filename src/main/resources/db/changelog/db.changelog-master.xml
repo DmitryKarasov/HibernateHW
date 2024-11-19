@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Создание таблицы City -->
+    <changeSet id="1" author="admin">
+        <createTable tableName="city">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Создание таблицы Person -->
+    <changeSet id="2" author="admin">
+        <createTable tableName="person">
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="age" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Внешний ключ для связи с таблицей city -->
+        <addForeignKeyConstraint
+                baseTableName="person"
+                baseColumnNames="city_id"
+                constraintName="fk_person_city"
+                referencedTableName="city"
+                referencedColumnNames="id"
+                deferrable="false"
+                initiallyDeferred="false"/>
+    </changeSet>
+
+    <!-- Вставка данных в таблицу City -->
+    <changeSet id="3" author="admin">
+        <insert tableName="city">
+            <column name="name" value="New York"/>
+        </insert>
+        <insert tableName="city">
+            <column name="name" value="Los Angeles"/>
+        </insert>
+        <insert tableName="city">
+            <column name="name" value="San Diego"/>
+        </insert>
+    </changeSet>
+
+    <!-- Вставка данных в таблицу Person -->
+    <changeSet id="4" author="admin">
+        <insert tableName="person">
+            <column name="name" value="John"/>
+            <column name="surname" value="Doe"/>
+            <column name="age" value="30"/>
+            <column name="phone_number" value="1234567890"/>
+            <column name="city_id" value="1"/>
+        </insert>
+        <insert tableName="person">
+            <column name="name" value="Jane"/>
+            <column name="surname" value="Smith"/>
+            <column name="age" value="25"/>
+            <column name="phone_number" value="0987654321"/>
+            <column name="city_id" value="1"/>
+        </insert>
+        <insert tableName="person">
+            <column name="name" value="Alice"/>
+            <column name="surname" value="Johnson"/>
+            <column name="age" value="40"/>
+            <column name="phone_number" value="1122334455"/>
+            <column name="city_id" value="2"/>
+        </insert>
+        <insert tableName="person">
+            <column name="name" value="Dug"/>
+            <column name="surname" value="Brown"/>
+            <column name="age" value="35"/>
+            <column name="phone_number" value="6677889900"/>
+            <column name="city_id" value="2"/>
+        </insert>
+        <insert tableName="person">
+            <column name="name" value="Tom"/>
+            <column name="surname" value="DeLonge"/>
+            <column name="age" value="50"/>
+            <column name="phone_number" value="1122334455"/>
+            <column name="city_id" value="3"/>
+        </insert>
+        <insert tableName="person">
+            <column name="name" value="Mark"/>
+            <column name="surname" value="Hoppus"/>
+            <column name="age" value="50"/>
+            <column name="phone_number" value="6677889900"/>
+            <column name="city_id" value="3"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
