@@ -37,6 +37,8 @@ public class Person {
     @JoinColumn(name = "city_id")
     private City cityOfLiving;
 
+    @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable
