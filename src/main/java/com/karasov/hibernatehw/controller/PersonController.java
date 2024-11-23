@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.util.List;
 
+
 /**
  * Контроллер для работы с сущностью {@link Person}.
  * Предоставляет REST API для создания, чтения, обновления и удаления людей.
@@ -35,6 +36,16 @@ public class PersonController {
     private final PersonService service;
 
     /**
+     * Приветственное сообщение для незалогиненных пользователей.
+     *
+     * @return Строка с приветственным сообщением.
+     */
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello! You should login to see the persons information.";
+    }
+
+    /**
      * Получает информацию о человеке по его имени, фамилии и возрасту.
      *
      * @param name    Имя человека.
@@ -43,7 +54,7 @@ public class PersonController {
      * @return {@link ResponseEntity} с объектом {@link PersonDto}, если человек найден.
      * @throws PersonNotFoundException если человек не найден.
      */
-    @GetMapping("/{name}/{surname}/{age}")
+    @GetMapping("/get/{name}/{surname}/{age}")
     public ResponseEntity<PersonDto> getPerson(@PathVariable String name,
                                                @PathVariable String surname,
                                                @PathVariable int age
@@ -58,7 +69,7 @@ public class PersonController {
      * @return {@link ResponseEntity} со списком объектов {@link PersonDto}.
      * @throws CityNotFoundException если город не найден.
      */
-    @GetMapping("/by-city")
+    @GetMapping("/get/by-city")
     public ResponseEntity<List<PersonDto>> getPersonListByCityName(@RequestParam String city) {
         return ResponseEntity.ok(service.getPersonsByCity(city));
     }
@@ -69,25 +80,9 @@ public class PersonController {
      * @param age Возраст для фильтрации.
      * @return {@link ResponseEntity} со списком объектов {@link PersonDto}.
      */
-    @GetMapping("/by-age")
-    public ResponseEntity<List<PersonDto>> getPersonListByCityName(@RequestParam int age) {
+    @GetMapping("/get/by-age")
+    public ResponseEntity<List<PersonDto>> getPersonsByAgeLowerThan(@RequestParam int age) {
         return ResponseEntity.ok(service.getPersonByAgeLowerThanAsc(age));
-    }
-
-    /**
-     * Получает информацию о человеке по его имени и фамилии.
-     *
-     * @param name    Имя человека.
-     * @param surname Фамилия человека.
-     * @return {@link ResponseEntity} с объектом {@link PersonDto}, если человек найден.
-     * @throws PersonNotFoundException если человек не найден.
-     */
-    @GetMapping()
-    public ResponseEntity<PersonDto> getPersonByNameAndSurname(
-            @RequestParam String name,
-            @RequestParam String surname
-    ) {
-        return ResponseEntity.ok(service.getPersonByNameAndSurname(name, surname));
     }
 
     /**
@@ -96,14 +91,13 @@ public class PersonController {
      * @param name    Имя человека.
      * @param surname Фамилия человека.
      * @param age     Возраст человека.
-     * @return {@link ResponseEntity} с статусом 200 OK, если человек удален.
+     * @return {@link ResponseEntity} со статусом 200 OK, если человек удален.
      * @throws PersonNotFoundException если человек не найден.
      */
-    @DeleteMapping()
-    public ResponseEntity<Void> deletePerson(
-            @RequestParam String name,
-            @RequestParam String surname,
-            @RequestParam int age
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deletePerson(@RequestParam String name,
+                                             @RequestParam String surname,
+                                             @RequestParam int age
     ) {
         service.deletePerson(name, surname, age);
         return ResponseEntity.ok().build();
@@ -117,7 +111,7 @@ public class PersonController {
      * @throws CreatingPersonAlreadyExistsException если человек с такими данными уже существует.
      * @throws CityNotFoundException                если указанный город не найден.
      */
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<URI> createPerson(@RequestBody PersonDto personDto) {
         return ResponseEntity.created(service.createPerson(personDto)).build();
     }
@@ -133,10 +127,10 @@ public class PersonController {
      * @throws PersonNotFoundException если человек не найден.
      * @throws CityNotFoundException   если указанный город не найден.
      */
-    @PatchMapping("/{name}/{surname}/{age}")
-    public ResponseEntity<Integer> updatePerson(@PathVariable String name,
-                                                @PathVariable String surname,
-                                                @PathVariable int age,
+    @PatchMapping("/update")
+    public ResponseEntity<Integer> updatePerson(@RequestParam String name,
+                                                @RequestParam String surname,
+                                                @RequestParam int age,
                                                 @RequestBody PatchPersonDto patchPersonDto) {
         return ResponseEntity.ok(service.patchPerson(name, surname, age, patchPersonDto));
     }
